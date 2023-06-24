@@ -18,7 +18,7 @@ class TestApi(unittest.TestCase):
 
     @unittest.skipUnless(is_local(), 'Only works locally')
     def test_api(self):
-        response = requests.get('%s/hello' % self.api.get_uri(), params={'who': 'World'})
+        response = requests.get(f'{self.api.get_uri()}/hello', params={'who': 'World'})
         result = response.json()
         self.assertDictEqual({'hello': 'World'}, result)
 

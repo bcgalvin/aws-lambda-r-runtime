@@ -33,7 +33,7 @@ class LocalApi:
         wait_for_port(self.port, self.host, interval=interval, retries=retries)
 
     def get_uri(self) -> str:
-        return 'http://{}:{}'.format(self.host, self.port)
+        return f'http://{self.host}:{self.port}'
 
 
 def start_local_api(host: str = '127.0.0.1',
@@ -49,8 +49,15 @@ def start_local_api(host: str = '127.0.0.1',
 
 
 def create_parameter_overrides(parameter_overrides):
-    return "'" + ' '.join(['ParameterKey={},ParameterValue={}'.format(key, value) for key, value in
-                           parameter_overrides.items()]) + "'"
+    return (
+        "'"
+        + ' '.join(
+            [
+                f'ParameterKey={key},ParameterValue={value}'
+                for key, value in parameter_overrides.items()
+            ]
+        )
+    ) + "'"
 
 
 class LocalLambdaServer:
@@ -75,12 +82,13 @@ class LocalLambdaServer:
                                         read_timeout=900,
                                         retries={'max_attempts': 0},
                                         )
-        return boto3.client('lambda',
-                            endpoint_url="http://{}:{}".format(self.host, self.port),
-                            use_ssl=False,
-                            verify=False,
-                            config=config,
-                            )
+        return boto3.client(
+            'lambda',
+            endpoint_url=f"http://{self.host}:{self.port}",
+            use_ssl=False,
+            verify=False,
+            config=config,
+        )
 
     def kill(self):
         self.process.kill()
